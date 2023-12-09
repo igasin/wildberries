@@ -185,13 +185,14 @@ var getWildberriesData = /*#__PURE__*/function () {
 }();
 var runWildberriesApplication = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    var _yield$getWildberries, users, products, boxCardsProduct, createCardProduct, searchInput;
+    var _yield$getWildberries, users, products, boxCardsProduct, createCardProduct, searchInput, listBasket, shopingList, cancelListBasketBtn, listCardsProduct, isImgViewAdded, imgView;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          createCardProduct = function _createCardProduct(imageCard, priceCard, titleCard) {
+          createCardProduct = function _createCardProduct(imageCard, priceCard, titleCard, idCard) {
             var cardProduct = document.createElement("div");
             cardProduct.classList.add("box-cards-product__item");
+            cardProduct.id = idCard;
             boxCardsProduct.append(cardProduct);
             var boxCardProductImage = document.createElement("div");
             boxCardProductImage.classList.add("box-cards-product__item-image");
@@ -230,8 +231,9 @@ var runWildberriesApplication = /*#__PURE__*/function () {
           products.forEach(function (product) {
             var image = product.image,
               price = product.price,
-              title = product.title;
-            createCardProduct(image, price, title);
+              title = product.title,
+              id = product.id;
+            createCardProduct(image, price, title, id);
           });
           searchInput = document.querySelector("#search-input");
           searchInput.addEventListener("input", function () {
@@ -243,13 +245,60 @@ var runWildberriesApplication = /*#__PURE__*/function () {
             filteredProducts.forEach(function (product) {
               var image = product.image,
                 price = product.price,
-                title = product.title;
-              createCardProduct(image, price, title);
+                title = product.title,
+                id = product.id;
+              createCardProduct(image, price, title, id);
             });
           });
+          listBasket = document.querySelector('#basket-btn');
+          shopingList = document.querySelector('#basket');
+          listBasket.addEventListener('click', function () {
+            shopingList.classList.add('basket-modal-window_show');
+          });
+          cancelListBasketBtn = document.querySelector('.reset-button');
+          cancelListBasketBtn.addEventListener('click', function () {
+            shopingList.classList.remove('basket-modal-window_show');
+          });
+
+          // const quickView = document.querySelector('.label-quick-view');
+          listCardsProduct = document.querySelector('.box-cards-product');
+          isImgViewAdded = false;
+          listCardsProduct.addEventListener('click', function (event) {
+            if (event.target.classList.contains('label-quick-view')) {
+              var cardProductItem = event.target.closest('.box-cards-product__item');
+              var imageCardItem = products.filter(function (element) {
+                return element.id === +cardProductItem.id;
+              });
+              var linkToPicture = imageCardItem[0].image;
+              if (!isImgViewAdded) {
+                imgView = document.createElement('img');
+                imgView.classList.add('image-view-box');
+                imgView.src = linkToPicture;
+                listCardsProduct.append(imgView);
+                isImgViewAdded = true;
+              }
+            }
+            ;
+            if (event.target.classList.contains('image-view-box') && isImgViewAdded) {
+              imgView.remove();
+              isImgViewAdded = false;
+            }
+          });
+
+          // document.addEventListener('click', function (event) {
+          //   if (event.target.classList.contains('image-view-box') && isImgViewAdded) {
+          //     imgView.remove();
+          //     isImgViewAdded = false;
+          //   }
+          // });
+
+          // quickView.addEventListener('click', (event) => {
+          //   const cardProductItem = event.target.closest('.box-cards-product__item');
+          //   console.log(cardProductItem);
+          // });
 
           // --------------------- End your code ---------------------
-        case 11:
+        case 19:
         case "end":
           return _context2.stop();
       }
@@ -285,7 +334,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57754" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59744" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

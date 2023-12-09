@@ -1,4 +1,4 @@
-import { swiper } from "./swiper.js";
+import { swiper } from './swiper.js';
 
 const getWildberriesData = async () => {
   const products = await fetch("https://fakestoreapi.com/products").then(
@@ -22,9 +22,10 @@ const runWildberriesApplication = async () => {
 
   const boxCardsProduct = document.querySelector(".box-cards-product");
 
-  function createCardProduct(imageCard, priceCard, titleCard) {
+  function createCardProduct(imageCard, priceCard, titleCard, idCard) {
     const cardProduct = document.createElement("div");
     cardProduct.classList.add("box-cards-product__item");
+    cardProduct.id = idCard;
     boxCardsProduct.append(cardProduct);
 
     const boxCardProductImage = document.createElement("div");
@@ -70,8 +71,8 @@ const runWildberriesApplication = async () => {
   }
 
   products.forEach((product) => {
-    const { image, price, title } = product;
-    createCardProduct(image, price, title);
+    const { image, price, title, id } = product;
+    createCardProduct(image, price, title, id);
   });
 
 
@@ -87,10 +88,72 @@ const runWildberriesApplication = async () => {
     boxCardsProduct.innerHTML = "";
 
     filteredProducts.forEach((product) => {
-      const { image, price, title } = product;
-      createCardProduct(image, price, title);
+      const { image, price, title, id } = product;
+      createCardProduct(image, price, title, id);
     });
   });
+
+
+  const listBasket = document.querySelector('#basket-btn');
+  const shopingList = document.querySelector('#basket');
+
+  listBasket.addEventListener('click', () => {
+    shopingList.classList.add('basket-modal-window_show');
+  });
+  
+  const cancelListBasketBtn = document.querySelector('.reset-button');
+
+  cancelListBasketBtn.addEventListener('click', () => {
+    shopingList.classList.remove('basket-modal-window_show');
+  });
+  
+
+  // const quickView = document.querySelector('.label-quick-view');
+
+  const listCardsProduct = document.querySelector('.box-cards-product');
+  let isImgViewAdded = false;
+  let imgView;
+
+  listCardsProduct.addEventListener('click', function (event) {
+
+    if (event.target.classList.contains('label-quick-view')) {
+      const cardProductItem = event.target.closest('.box-cards-product__item');
+
+      const imageCardItem = products.filter((element) => element.id === +cardProductItem.id);
+      const linkToPicture = imageCardItem[0].image;
+
+      if(!isImgViewAdded) {
+      imgView = document.createElement('img');
+      imgView.classList.add('image-view-box');
+      imgView.src = linkToPicture;
+      listCardsProduct.append(imgView);
+      isImgViewAdded = true;
+      }
+    };
+
+    if (event.target.classList.contains('image-view-box') && isImgViewAdded) {
+      imgView.remove();
+      isImgViewAdded = false;
+    }
+  });
+
+  
+
+  // document.addEventListener('click', function (event) {
+  //   if (event.target.classList.contains('image-view-box') && isImgViewAdded) {
+  //     imgView.remove();
+  //     isImgViewAdded = false;
+  //   }
+  // });
+  
+
+
+  // quickView.addEventListener('click', (event) => {
+  //   const cardProductItem = event.target.closest('.box-cards-product__item');
+  //   console.log(cardProductItem);
+  // });
+
+
 
   // --------------------- End your code ---------------------
 };
