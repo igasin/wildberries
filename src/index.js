@@ -1,4 +1,4 @@
-import { swiper } from './swiper.js';
+import { swiper } from "./swiper.js";
 
 const getWildberriesData = async () => {
   const products = await fetch("https://fakestoreapi.com/products").then(
@@ -75,85 +75,132 @@ const runWildberriesApplication = async () => {
     createCardProduct(image, price, title, id);
   });
 
+  function handleSearchInput() {
+    const searchInput = document.querySelector("#search-input");
 
-  const searchInput = document.querySelector("#search-input");
+    searchInput.addEventListener("input", () => {
+      const searchQuery = searchInput.value.toLowerCase().trim();
 
-  searchInput.addEventListener("input", () => {
-    const searchQuery = searchInput.value.toLowerCase().trim();
+      const filteredProducts = products.filter((product) =>
+        product.title.toLowerCase().includes(searchQuery)
+      );
 
-    const filteredProducts = products.filter((product) =>
-      product.title.toLowerCase().includes(searchQuery)
-    );
+      boxCardsProduct.innerHTML = "";
 
-    boxCardsProduct.innerHTML = "";
-
-    filteredProducts.forEach((product) => {
-      const { image, price, title, id } = product;
-      createCardProduct(image, price, title, id);
+      filteredProducts.forEach((product) => {
+        const { image, price, title, id } = product;
+        createCardProduct(image, price, title, id);
+      });
     });
-  });
+  }
 
+  handleSearchInput();
 
-  const listBasket = document.querySelector('#basket-btn');
-  const shopingList = document.querySelector('#basket');
+  const listBasket = document.querySelector("#basket-btn");
+  const shopingList = document.querySelector("#basket");
 
-  listBasket.addEventListener('click', () => {
-    shopingList.classList.add('basket-modal-window_show');
-  });
-  
-  const cancelListBasketBtn = document.querySelector('.reset-button');
-
-  cancelListBasketBtn.addEventListener('click', () => {
-    shopingList.classList.remove('basket-modal-window_show');
-  });
-  
-
-  // const quickView = document.querySelector('.label-quick-view');
-
-  const listCardsProduct = document.querySelector('.box-cards-product');
-  let isImgViewAdded = false;
-  let imgView;
-
-  listCardsProduct.addEventListener('click', function (event) {
-
-    if (event.target.classList.contains('label-quick-view')) {
-      const cardProductItem = event.target.closest('.box-cards-product__item');
-
-      const imageCardItem = products.filter((element) => element.id === +cardProductItem.id);
-      const linkToPicture = imageCardItem[0].image;
-
-      if(!isImgViewAdded) {
-      imgView = document.createElement('img');
-      imgView.classList.add('image-view-box');
-      imgView.src = linkToPicture;
-      listCardsProduct.append(imgView);
-      isImgViewAdded = true;
-      }
-    };
-
-    if (event.target.classList.contains('image-view-box') && isImgViewAdded) {
-      imgView.remove();
-      isImgViewAdded = false;
+  listBasket.addEventListener("click", () => {
+    if (shopingList.classList.contains("basket-modal-window_show")) {
+      shopingList.classList.remove("basket-modal-window_show");
+    } else {
+      shopingList.classList.add("basket-modal-window_show");
     }
   });
 
+  const listCardsProduct = document.querySelector(".box-cards-product");
+  let isImgViewAdded = false;
+  let imgView;
+
+  listCardsProduct.addEventListener("click", function (event) {
+    if (event.target.classList.contains("label-quick-view")) {
+      const cardProductItem = event.target.closest(".box-cards-product__item");
+
+      const imageCardItem = products.filter(
+        (element) => element.id === +cardProductItem.id
+      );
+      const linkToPicture = imageCardItem[0].image;
+
+      if (!isImgViewAdded) {
+        imgView = document.createElement("img");
+        imgView.classList.add("image-view-box");
+        imgView.src = linkToPicture;
+        listCardsProduct.append(imgView);
+        isImgViewAdded = true;
+      }
+    }
+
+    if (event.target.classList.contains("image-view-box") && isImgViewAdded) {
+      imgView.remove();
+      isImgViewAdded = false;
+    }
+
+    if (event.target.classList.contains("button-add-to-basket")) {
+      const cardProductItem = event.target.closest(".box-cards-product__item");
+
+      const cardItem = products.filter(
+        (element) => element.id === +cardProductItem.id
+      );
+      const titleCardItem = cardItem[0].title;
+      const priceCardItem = cardItem[0].price;
+      console.log(titleCardItem, priceCardItem);
+
+      const titleProduct = document.createElement("span");
+      titleProduct.textContent = titleCardItem;
+      titleProduct.classList.add("basket-shoping-list-span");
+
+      const priceProduct = document.createElement("span");
+      priceProduct.textContent = priceCardItem;
+      priceProduct.classList.add("basket-shoping-list-span_price");
+
+      const basketShopList = document.querySelector(".basket-shoping-list");
+      basketShopList.append(titleProduct, priceProduct);
+
+      const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      cartItems.push({ title: titleCardItem, price: priceCardItem });
+      localStorage.setItem("cartItems", JSON.stringify(cartItems));
+      updateTotalPrice(cartItems);
+    }
+  });
+
+  const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+  cartItems.forEach((item) => {
+    const titleProduct = document.createElement("span");
+    titleProduct.textContent = item.title;
+    titleProduct.classList.add("basket-shoping-list-span");
+
+    const priceProduct = document.createElement("span");
+    priceProduct.textContent = item.price;
+    priceProduct.classList.add("basket-shoping-list-span_price");
+
+    const basketShopList = document.querySelector(".basket-shoping-list");
+    basketShopList.append(titleProduct, priceProduct);
+  });
   
+  const discount = 0.9;
+  function updateTotalPrice(cartItems) {
+    const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0) * discount;
 
-  // document.addEventListener('click', function (event) {
-  //   if (event.target.classList.contains('image-view-box') && isImgViewAdded) {
-  //     imgView.remove();
-  //     isImgViewAdded = false;
-  //   }
-  // });
-  
+    const totalPriceElement = document.querySelector(".total-price");
+    totalPriceElement.textContent = `Dicount 10% - Total Price: ${totalPrice.toFixed(2)}`;
+    totalPriceElement.classList.add("total-price");
 
+    const totalPriceContainer = document.querySelector(
+      ".basket-shoping-list_total-price"
+    );
+    totalPriceContainer.append(totalPriceElement);
+  }
+  updateTotalPrice(cartItems);
 
-  // quickView.addEventListener('click', (event) => {
-  //   const cardProductItem = event.target.closest('.box-cards-product__item');
-  //   console.log(cardProductItem);
-  // });
+  const cancelListBasketBtn = document.querySelector(".reset-button");
+  cancelListBasketBtn.addEventListener("click", () => {
+    localStorage.removeItem("cartItems");
 
-
+    const basketShopList = document.querySelector(".basket-shoping-list");
+    basketShopList.innerHTML = "";
+    const totalPriceElement = document.querySelector(".total-price");
+    totalPriceElement.textContent = "Total Price: 0.00 $";
+  });
 
   // --------------------- End your code ---------------------
 };

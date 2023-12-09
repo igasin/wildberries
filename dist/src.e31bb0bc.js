@@ -185,10 +185,37 @@ var getWildberriesData = /*#__PURE__*/function () {
 }();
 var runWildberriesApplication = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    var _yield$getWildberries, users, products, boxCardsProduct, createCardProduct, searchInput, listBasket, shopingList, cancelListBasketBtn, listCardsProduct, isImgViewAdded, imgView;
+    var _yield$getWildberries, users, products, boxCardsProduct, createCardProduct, handleSearchInput, listBasket, shopingList, listCardsProduct, isImgViewAdded, imgView, cartItems, discount, updateTotalPrice, cancelListBasketBtn;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
+          updateTotalPrice = function _updateTotalPrice(cartItems) {
+            var totalPrice = cartItems.reduce(function (sum, item) {
+              return sum + item.price;
+            }, 0) * discount;
+            var totalPriceElement = document.querySelector(".total-price");
+            totalPriceElement.textContent = "Dicount 10% - Total Price: ".concat(totalPrice.toFixed(2));
+            totalPriceElement.classList.add("total-price");
+            var totalPriceContainer = document.querySelector(".basket-shoping-list_total-price");
+            totalPriceContainer.append(totalPriceElement);
+          };
+          handleSearchInput = function _handleSearchInput() {
+            var searchInput = document.querySelector("#search-input");
+            searchInput.addEventListener("input", function () {
+              var searchQuery = searchInput.value.toLowerCase().trim();
+              var filteredProducts = products.filter(function (product) {
+                return product.title.toLowerCase().includes(searchQuery);
+              });
+              boxCardsProduct.innerHTML = "";
+              filteredProducts.forEach(function (product) {
+                var image = product.image,
+                  price = product.price,
+                  title = product.title,
+                  id = product.id;
+                createCardProduct(image, price, title, id);
+              });
+            });
+          };
           createCardProduct = function _createCardProduct(imageCard, priceCard, titleCard, idCard) {
             var cardProduct = document.createElement("div");
             cardProduct.classList.add("box-cards-product__item");
@@ -218,9 +245,9 @@ var runWildberriesApplication = /*#__PURE__*/function () {
             boxCardProductImage.append(cardProductImage, labelQuickView);
             cardProduct.append(boxCardProductImage, discountPercentItem, addToBasket, discountPriceItem, priceItem, productName);
           };
-          _context2.next = 3;
+          _context2.next = 5;
           return getWildberriesData();
-        case 3:
+        case 5:
           _yield$getWildberries = _context2.sent;
           users = _yield$getWildberries.users;
           products = _yield$getWildberries.products;
@@ -235,70 +262,86 @@ var runWildberriesApplication = /*#__PURE__*/function () {
               id = product.id;
             createCardProduct(image, price, title, id);
           });
-          searchInput = document.querySelector("#search-input");
-          searchInput.addEventListener("input", function () {
-            var searchQuery = searchInput.value.toLowerCase().trim();
-            var filteredProducts = products.filter(function (product) {
-              return product.title.toLowerCase().includes(searchQuery);
-            });
-            boxCardsProduct.innerHTML = "";
-            filteredProducts.forEach(function (product) {
-              var image = product.image,
-                price = product.price,
-                title = product.title,
-                id = product.id;
-              createCardProduct(image, price, title, id);
-            });
+          handleSearchInput();
+          listBasket = document.querySelector("#basket-btn");
+          shopingList = document.querySelector("#basket");
+          listBasket.addEventListener("click", function () {
+            if (shopingList.classList.contains("basket-modal-window_show")) {
+              shopingList.classList.remove("basket-modal-window_show");
+            } else {
+              shopingList.classList.add("basket-modal-window_show");
+            }
           });
-          listBasket = document.querySelector('#basket-btn');
-          shopingList = document.querySelector('#basket');
-          listBasket.addEventListener('click', function () {
-            shopingList.classList.add('basket-modal-window_show');
-          });
-          cancelListBasketBtn = document.querySelector('.reset-button');
-          cancelListBasketBtn.addEventListener('click', function () {
-            shopingList.classList.remove('basket-modal-window_show');
-          });
-
-          // const quickView = document.querySelector('.label-quick-view');
-          listCardsProduct = document.querySelector('.box-cards-product');
+          listCardsProduct = document.querySelector(".box-cards-product");
           isImgViewAdded = false;
-          listCardsProduct.addEventListener('click', function (event) {
-            if (event.target.classList.contains('label-quick-view')) {
-              var cardProductItem = event.target.closest('.box-cards-product__item');
+          listCardsProduct.addEventListener("click", function (event) {
+            if (event.target.classList.contains("label-quick-view")) {
+              var cardProductItem = event.target.closest(".box-cards-product__item");
               var imageCardItem = products.filter(function (element) {
                 return element.id === +cardProductItem.id;
               });
               var linkToPicture = imageCardItem[0].image;
               if (!isImgViewAdded) {
-                imgView = document.createElement('img');
-                imgView.classList.add('image-view-box');
+                imgView = document.createElement("img");
+                imgView.classList.add("image-view-box");
                 imgView.src = linkToPicture;
                 listCardsProduct.append(imgView);
                 isImgViewAdded = true;
               }
             }
-            ;
-            if (event.target.classList.contains('image-view-box') && isImgViewAdded) {
+            if (event.target.classList.contains("image-view-box") && isImgViewAdded) {
               imgView.remove();
               isImgViewAdded = false;
             }
+            if (event.target.classList.contains("button-add-to-basket")) {
+              var _cardProductItem = event.target.closest(".box-cards-product__item");
+              var cardItem = products.filter(function (element) {
+                return element.id === +_cardProductItem.id;
+              });
+              var titleCardItem = cardItem[0].title;
+              var priceCardItem = cardItem[0].price;
+              console.log(titleCardItem, priceCardItem);
+              var titleProduct = document.createElement("span");
+              titleProduct.textContent = titleCardItem;
+              titleProduct.classList.add("basket-shoping-list-span");
+              var priceProduct = document.createElement("span");
+              priceProduct.textContent = priceCardItem;
+              priceProduct.classList.add("basket-shoping-list-span_price");
+              var basketShopList = document.querySelector(".basket-shoping-list");
+              basketShopList.append(titleProduct, priceProduct);
+              var _cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+              _cartItems.push({
+                title: titleCardItem,
+                price: priceCardItem
+              });
+              localStorage.setItem("cartItems", JSON.stringify(_cartItems));
+              updateTotalPrice(_cartItems);
+            }
+          });
+          cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+          cartItems.forEach(function (item) {
+            var titleProduct = document.createElement("span");
+            titleProduct.textContent = item.title;
+            titleProduct.classList.add("basket-shoping-list-span");
+            var priceProduct = document.createElement("span");
+            priceProduct.textContent = item.price;
+            priceProduct.classList.add("basket-shoping-list-span_price");
+            var basketShopList = document.querySelector(".basket-shoping-list");
+            basketShopList.append(titleProduct, priceProduct);
+          });
+          discount = 0.9;
+          updateTotalPrice(cartItems);
+          cancelListBasketBtn = document.querySelector(".reset-button");
+          cancelListBasketBtn.addEventListener("click", function () {
+            localStorage.removeItem("cartItems");
+            var basketShopList = document.querySelector(".basket-shoping-list");
+            basketShopList.innerHTML = "";
+            var totalPriceElement = document.querySelector(".total-price");
+            totalPriceElement.textContent = "Total Price: 0.00 $";
           });
 
-          // document.addEventListener('click', function (event) {
-          //   if (event.target.classList.contains('image-view-box') && isImgViewAdded) {
-          //     imgView.remove();
-          //     isImgViewAdded = false;
-          //   }
-          // });
-
-          // quickView.addEventListener('click', (event) => {
-          //   const cardProductItem = event.target.closest('.box-cards-product__item');
-          //   console.log(cardProductItem);
-          // });
-
           // --------------------- End your code ---------------------
-        case 19:
+        case 24:
         case "end":
           return _context2.stop();
       }
@@ -334,7 +377,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59744" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63327" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

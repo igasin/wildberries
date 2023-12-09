@@ -22,6 +22,7 @@
 .header {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   justify-content: space-between;
   gap: 25px;
@@ -202,7 +203,6 @@
   justify-content: start;
   align-items: center;
   width: 500px;
-  height: 500px;
   border-radius: 25px;
   background-color: cornsilk;
   padding: 10px 5px;
@@ -215,6 +215,7 @@
 
 .basket-modal-window_show {
   display: flex;
+  max-width: 65%;
 }
 
 .box-conteiner-nav {
@@ -248,7 +249,7 @@
   top: 15%;
   display: block;
   object-fit: contain;
-  width: 400px;
+  max-width: 50%;
   border-radius: 25px;
   z-index: 2;
   box-shadow:
@@ -261,4 +262,33 @@
   --swiper-theme-color: white;
   --swiper-navigation-size: 30px;
   --swiper-pagination-bullet-size: 15px;
+}
+
+.basket-shoping-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.basket-shoping-list_total-price {
+
+}
+
+.basket-shoping-list-span {
+  display: flex;
+}
+
+.basket-shoping-list-span_price {
+  display: flex;
+  justify-content: end;
+}
+
+.basket-shoping-list-title {
+
+}
+
+.basket-shoping-list-price {
+
 }
