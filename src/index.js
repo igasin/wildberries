@@ -47,9 +47,7 @@ const runWildberriesApplication = async () => {
     addToBasket.classList.add("button-add-to-basket");
 
     const discountPriceItem = document.createElement("span");
-    discountPriceItem.textContent = `New price ${(priceCard * 0.9).toFixed(
-      2
-    )} $`;
+    discountPriceItem.textContent = `New price ${(priceCard * 0.9).toFixed(2)} $`;
 
     const priceItem = document.createElement("span");
     priceItem.classList.add("span__line-through");
@@ -70,10 +68,19 @@ const runWildberriesApplication = async () => {
     );
   }
 
-  products.forEach((product) => {
-    const { image, price, title, id } = product;
-    createCardProduct(image, price, title, id);
-  });
+  // products.forEach((product) => {
+  //   const { image, price, title, id } = product;
+  //   createCardProduct(image, price, title, id);
+  // });
+
+  function renderProducts(products) {
+    products.forEach((product) => {
+      const { image, price, title, id } = product;
+      createCardProduct(image, price, title, id);
+    });
+  }
+  
+  renderProducts(products);
 
   function handleSearchInput() {
     const searchInput = document.querySelector("#search-input");
@@ -182,7 +189,7 @@ const runWildberriesApplication = async () => {
     const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0) * discount;
 
     const totalPriceElement = document.querySelector(".total-price");
-    totalPriceElement.textContent = `Dicount 10% - Total Price: ${totalPrice.toFixed(2)}`;
+    totalPriceElement.textContent = `Dicount 10% - Total Price: ${totalPrice.toFixed(2)} $`;
     totalPriceElement.classList.add("total-price");
 
     const totalPriceContainer = document.querySelector(

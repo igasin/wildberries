@@ -185,7 +185,7 @@ var getWildberriesData = /*#__PURE__*/function () {
 }();
 var runWildberriesApplication = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    var _yield$getWildberries, users, products, boxCardsProduct, createCardProduct, handleSearchInput, listBasket, shopingList, listCardsProduct, isImgViewAdded, imgView, cartItems, discount, updateTotalPrice, cancelListBasketBtn;
+    var _yield$getWildberries, users, products, boxCardsProduct, createCardProduct, renderProducts, handleSearchInput, listBasket, shopingList, listCardsProduct, isImgViewAdded, imgView, cartItems, discount, updateTotalPrice, cancelListBasketBtn;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
@@ -194,7 +194,7 @@ var runWildberriesApplication = /*#__PURE__*/function () {
               return sum + item.price;
             }, 0) * discount;
             var totalPriceElement = document.querySelector(".total-price");
-            totalPriceElement.textContent = "Dicount 10% - Total Price: ".concat(totalPrice.toFixed(2));
+            totalPriceElement.textContent = "Dicount 10% - Total Price: ".concat(totalPrice.toFixed(2), " $");
             totalPriceElement.classList.add("total-price");
             var totalPriceContainer = document.querySelector(".basket-shoping-list_total-price");
             totalPriceContainer.append(totalPriceElement);
@@ -214,6 +214,15 @@ var runWildberriesApplication = /*#__PURE__*/function () {
                   id = product.id;
                 createCardProduct(image, price, title, id);
               });
+            });
+          };
+          renderProducts = function _renderProducts(products) {
+            products.forEach(function (product) {
+              var image = product.image,
+                price = product.price,
+                title = product.title,
+                id = product.id;
+              createCardProduct(image, price, title, id);
             });
           };
           createCardProduct = function _createCardProduct(imageCard, priceCard, titleCard, idCard) {
@@ -245,23 +254,20 @@ var runWildberriesApplication = /*#__PURE__*/function () {
             boxCardProductImage.append(cardProductImage, labelQuickView);
             cardProduct.append(boxCardProductImage, discountPercentItem, addToBasket, discountPriceItem, priceItem, productName);
           };
-          _context2.next = 5;
+          _context2.next = 6;
           return getWildberriesData();
-        case 5:
+        case 6:
           _yield$getWildberries = _context2.sent;
           users = _yield$getWildberries.users;
           products = _yield$getWildberries.products;
           console.log(users, products);
 
           // --------------------- Write your code ---------------------
-          boxCardsProduct = document.querySelector(".box-cards-product");
-          products.forEach(function (product) {
-            var image = product.image,
-              price = product.price,
-              title = product.title,
-              id = product.id;
-            createCardProduct(image, price, title, id);
-          });
+          boxCardsProduct = document.querySelector(".box-cards-product"); // products.forEach((product) => {
+          //   const { image, price, title, id } = product;
+          //   createCardProduct(image, price, title, id);
+          // });
+          renderProducts(products);
           handleSearchInput();
           listBasket = document.querySelector("#basket-btn");
           shopingList = document.querySelector("#basket");
@@ -341,7 +347,7 @@ var runWildberriesApplication = /*#__PURE__*/function () {
           });
 
           // --------------------- End your code ---------------------
-        case 24:
+        case 25:
         case "end":
           return _context2.stop();
       }
@@ -377,7 +383,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54345" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50051" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
