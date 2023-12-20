@@ -16,7 +16,6 @@ const getWildberriesData = async () => {
 
 const runWildberriesApplication = async () => {
   const { users, products } = await getWildberriesData();
-  console.log(users, products);
 
   // --------------------- Write your code ---------------------
 
@@ -69,13 +68,13 @@ const runWildberriesApplication = async () => {
   }
 
   function renderProducts(products) {
-    products.forEach((product) => {
-      const { image, price, title, id } = product;
+    products.forEach(({ image, price, title, id }) => {
+      // const { image, price, title, id } = product;
       createCardProduct(image, price, title, id);
     });
   }
 
-  renderProducts(products);
+  // renderProducts(products);
 
   function handleSearchInput() {
     const searchInput = document.querySelector("#search-input");
@@ -96,7 +95,7 @@ const runWildberriesApplication = async () => {
     });
   }
 
-  handleSearchInput();
+  // handleSearchInput();
 
   function toggleShoppingList() {
     const listBasket = document.querySelector("#basket-btn");
@@ -110,6 +109,8 @@ const runWildberriesApplication = async () => {
     });
   }
 
+  renderProducts(products);
+  handleSearchInput();
   toggleShoppingList();
 
   const listCardsProduct = document.querySelector(".box-cards-product");
@@ -203,8 +204,7 @@ const runWildberriesApplication = async () => {
 
   function updateTotalPrice(cartItems) {
     const discount = 0.9;
-    const totalPrice =
-      cartItems.reduce((sum, item) => sum + item.price, 0) * discount;
+    const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0) * discount;
 
     totalPriceElement.textContent = `Discount 10% - Total Price: ${totalPrice.toFixed(2)} $`;
   }
